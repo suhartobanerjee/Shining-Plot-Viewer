@@ -1,9 +1,9 @@
 library(shiny)
 library(shinyjs)
-source("../../../PhD_SandersLab/local_analysis/Digital-Karyotype/R/utils.R",
-    chdir = T
-)
+
+
 ################################################################################
+
 
 
 
@@ -21,8 +21,17 @@ ui <- fluidPage(
     )
 )
 
-str(Plot_Digital_Karyotype)
-server <- function(input, output) {
+
+server <- function(input, output, plot) {
+
+    plot_list <- list()
+
+
+    plot_list[[length(plot_list) + 1]] <- getShinyOption("plot_list")
+    print(length(plot_list))
+    
+    
+    max_len <- reactiveVal(length(plot_list))
     counter <- reactiveVal(1)
     shinyjs::disable("prev_button")
 
@@ -55,7 +64,13 @@ server <- function(input, output) {
 
     output$shiny_plot <- renderPlot(
         {
-            plot(plot_list[[counter()]])
+            if (max_len() > counter()) {
+                
+                print(plot_list[[max_len()]])
+            } else {
+
+                print(plot_list[[counter()]])
+            }
         },
         width = 1100,
         height = 850
@@ -75,25 +90,3 @@ shinyApp(
 
 
 
-
-# Tests
-plot_list <- list()
-t <- seq(0, 10, 0.1)
-y <- sin(t)
-sine_df <- data.frame(
-    t = t,
-    y = y
-)
-plot_list[[1]] <- ggplot(
-    data = sine_df,
-    aes(
-        x = t,
-        y = y
-    )
-) +
-    geom_line()
-plot_list[[2]] <- Plot_Digital_Karyotype(plot_ideo_only = T)
-plot_list[[3]] <- Plot_Digital_Karyotype(
-    plot_ideo_only = T,
-    plot_both_haplotypes = F
-)
