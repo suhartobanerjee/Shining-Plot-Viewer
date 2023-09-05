@@ -1,3 +1,4 @@
+library(plotly)
 setwd("../")
 source("../../../PhD_SandersLab/local_analysis/Digital-Karyotype/R/utils.R",
     chdir = T
@@ -27,6 +28,25 @@ plt1 <- ggplot(
 sPlot(plt1, run_app = T)
 
 plt2 <- Plot_Digital_Karyotype(plot_ideo_only = T)
+ggplotly(plt2)
+ggplotly(plt1)
+ggsave(filename = "test.svg",
+       plot = plt2,
+       width = 29.7,
+       height = 21
+)
+empty <- function() {
+    
+}
+
+shinyApp(ui = NULL, 
+         server = empty, 
+         options = list(shiny.host = "0.0.0.0",
+                        shiny.port = 2700))
+
+
+
+str(plt2)
 
 sPlot(plt2, run_app = T)
 
